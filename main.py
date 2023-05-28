@@ -7,7 +7,7 @@ import requests
 from numpy.linalg import norm
 import numpy as np
 
-TOKEN = "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"
+TOKEN = ""
 URL = "https://api-inference.huggingface.co/pipeline/feature-extraction/"
 HEADERS = {"Accept": "Application/json", "Authorization": f"Bearer {TOKEN}"}
 
@@ -15,7 +15,7 @@ def openai_embedding():
     openai_api = os.getenv("OPENAI_API_KEY")
     print(openai_api)
     url_embedded = "https://api.openai.com/v1/embeddings"
-    headers = {"Accept": "Application/json","Authorization": "Bearer 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"}
+    headers = {"Accept": "Application/json","Authorization": "Bearer "}
     payload = { "input": ["I want this to be embedded"],"model": "text-embedding-ada-002","options":{"wait_for_model":True}}
     web = requests.post(url_embedded, headers=headers, params=json.dumps(payload), auth=None)
     print("Status:", web.status_code)

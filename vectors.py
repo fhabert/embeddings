@@ -3,10 +3,10 @@ import openai
 import pinecone
 
 openai_api_key = os.environ["OPENAI_API_KEY"]
-PINECONE_API_KEY = "c1bf3fa4-58a9-4d15-86cc-51eed89b1c32"
+PINECONE_API_KEY = ""
 PINECONE_ENV = "us-west4-gcp-free"
 PINECONE_TABLE_NAME = "my_test"
-OPENAI_KEY = "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"
+OPENAI_KEY = ""
 
 pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
 openai.api_key = OPENAI_KEY
