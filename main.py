@@ -3,13 +3,23 @@ from transformers import GLPNFeatureExtractor, GLPNForDepthEstimation
 from transformers import pipeline
 import os
 import json
+import torch
+from PIL import Image
 import requests
 from numpy.linalg import norm
 import numpy as np
 
-TOKEN = ""
+TOKEN = "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"
 URL = "https://api-inference.huggingface.co/pipeline/feature-extraction/"
 HEADERS = {"Accept": "Application/json", "Authorization": f"Bearer {TOKEN}"}
+
+    
+# def ask_gpt(text: str):
+#     tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+#     model = GPT2Model.from_pretrained('gpt2')
+#     encoded_input = tokenizer(text, return_tensors='pt')
+#     output = model(**encoded_input)
+#     return output
 
 def openai_embedding():
     openai_api = os.getenv("OPENAI_API_KEY")
@@ -56,6 +66,26 @@ def similarity():
     output = total_cos_similarity(np.array(formatted_output))
     return output
 
+def depth_estim():
+    url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+    image = Image.open(requests.get(url, stream=True).raw)
+    image = Image.open("./kitchen.jpg")
+    image.show()
+    feature_extractor = GLPNFeatureExtractor.from_pretrained("vinvino02/glpn-nyu")
+    model = GLPNForDepthEstimation.from_pretrained("vinvino02/glpn-nyu")
+    inputs = feature_extractor(images=image, return_tensors="pt")
+    with torch.no_grad():
+        outputs = model(**inputs)
+        predicted_depth = outputs.predicted_depth
+    prediction = torch.nn.functional.interpolate(predicted_depth.unsqueeze(1), size=image.size[::-1], 
+                                                 mode="bilinear",align_corners=False)
+    output = prediction.squeeze().cpu().numpy()
+    formatted = (output*255/np.max(output)).astype('uint8')
+    depth = Image.fromarray(formatted)
+    depth.show()
+    pass
+
 # call_openai()
-embedded_output = similarity()
-print(embedded_output)
+# embedded_output = similarity()
+depth_estim()
+# print(embedded_output)
